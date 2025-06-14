@@ -1,0 +1,21 @@
+services:
+  inference-benchmarker:
+    image: inference-benchmarker
+    network_mode: host
+    entrypoint: inference-benchmarker
+    command: [
+      "--url", "http://localhost:8000/v1",
+      "--max-vus", "800",
+      "--duration", "120s",
+      "--warmup", "30s",
+      "--benchmark-kind", "rate",
+      # Try 50 req per second because it only doing 45.9ish
+      # "--rates", "1.0",
+      # "--rates", "10.0",
+      # "--rates", "30.0",
+      "--rates", "50.0",
+      "--prompt-options", "num_tokens=200,max_tokens=220,min_tokens=180,variance=10",
+      "--decode-options", "num_tokens=200,max_tokens=220,min_tokens=180,variance=10",
+      "--model-name", "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+      "--tokenizer-name", "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B",
+    ]

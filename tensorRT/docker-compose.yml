@@ -1,0 +1,39 @@
+services:
+  tensor-rt:
+    image: nvcr.io/nvidia/tritonserver:25.05-trtllm-python-py3
+    # Allow Interactive Shell
+    stdin_open: true
+    tty: true
+    entrypoint: /build_model.sh
+    ulimits:
+      memlock: -1
+      stack: 67108864
+    build:
+      shm_size: 2g
+    network_mode: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    # Allow Switching Models & Not have to Re-Download Every Container
+    volumes:
+      - ./DeepSeek-R1-Distill-Qwen-1.5B:/app/examples/deepseek/:ro
+      - ./build_model.sh:/build_model.sh:ro
+    # Deployment Mostly based off of this comment on the tensorRT github:
+    # https://github.com/NVIDIA/TensorRT-LLM/issues/4275#issuecomment-2941155249
+    environment:
+      - KV_CACHE_FREE_GPU_MEM_FRACTION=0.9
+      - ENGINE_DIR=/engine
+      - TOKENIZER_DIR=/app/examples/deepseek/
+      - MODEL_FOLDER=/triton_model_repo
+      - TRITON_MAX_BATCH_SIZE=1
+      - INSTANCE_COUNT=1
+      - MAX_QUEUE_DELAY_MS=0
+      - MAX_QUEUE_SIZE=0
+      - FILL_TEMPLATE_SCRIPT=/app/tools/fill_template.py
+      - DECOUPLED_MODE=false
+      - LOGITS_DATATYPE=TYPE_FP32
+

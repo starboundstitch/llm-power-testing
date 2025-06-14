@@ -1,0 +1,13 @@
+services:
+  gpu-burn:
+    image: gpu_burn
+    entrypoint: ./gpu_burn
+    # The single argument is the runtime of the command 1800 is 30 minutes
+    command: [ "1800" ]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
