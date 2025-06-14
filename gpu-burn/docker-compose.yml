@@ -11,3 +11,7 @@ services:
             - driver: nvidia
               count: all
               capabilities: [gpu]
+  stress:
+    image: polinux/stress
+    entrypoint: stress
+    command: [ "--cpu", "64", "--timeout", "1800" ]
