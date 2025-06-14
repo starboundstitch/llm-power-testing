@@ -36,4 +36,3 @@ services:
       - FILL_TEMPLATE_SCRIPT=/app/tools/fill_template.py
       - DECOUPLED_MODE=false
       - LOGITS_DATATYPE=TYPE_FP32
-
